@@ -1,6 +1,15 @@
 # Çeviri Kalite Kontrol
 
-[GitHub deposu](https://github.com/acar32furkan-glitch/ceviri-kalite-kontrol) · [CI akışı](https://github.com/acar32furkan-glitch/ceviri-kalite-kontrol/actions) · AI destekli çeviri ve yerelleştirme kalite kontrol aracı. Kaynak metin ile hedef çeviriyi karşılaştırır; anlam doğruluğu, akıcılık, terminoloji, ton ve biçimlendirme korunumu için kategori bazlı skorlar ve uygulanabilir düzeltme önerileri üretir.
+[GitHub deposu](https://github.com/acar32furkan-glitch/ceviri-kalite-kontrol) · [CI](https://github.com/acar32furkan-glitch/ceviri-kalite-kontrol/actions) · **[canlı demo](https://ceviri-kalite-kontrol.vercel.app)** · AI destekli çeviri ve yerelleştirme kalite kontrol aracı. Kaynak metin ile hedef çeviriyi karşılaştırır; anlam doğruluğu, akıcılık, terminoloji, ton ve biçimlendirme korunumu için kategori bazlı skorlar ve uygulanabilir düzeltme önerileri üretir.
+
+[![CI](https://github.com/acar32furkan-glitch/ceviri-kalite-kontrol/actions/workflows/ci.yml/badge.svg)](https://github.com/acar32furkan-glitch/ceviri-kalite-kontrol/actions/workflows/ci.yml)
+![lisans](https://img.shields.io/badge/lisans-MIT-blue)
+![testler](https://img.shields.io/badge/testler-17%20ye%C5%9Fil-brightgreen)
+
+> **Ölçüm durumu (dürüstçe):** Bu araç şu anda **ölçülmemiş**. İnsan etiketli bir altın veri seti ve
+> tekrarlanabilir bir eval harness'ı kuruluyor; rakamlar hazır olduğunda bu README'ye "Ölçülmüş kalite"
+> bölümü olarak eklenecek. Uydurma metrik yayımlanmaz — kapsam ve kararlar:
+> [docs/DECISIONS.md](docs/DECISIONS.md).
 
 ![Masaüstü önizleme](public/preview-home.png)
 
@@ -71,9 +80,7 @@ npm run build
   "sourceText": "Your password has been reset.",
   "targetText": "Parolanız sıfırlandı.",
   "direction": "en-tr",
-  "glossary": [
-    { "source": "password", "target": "parola" }
-  ]
+  "glossary": [{ "source": "password", "target": "parola" }]
 }
 ```
 
@@ -107,13 +114,29 @@ Backend, gelen metinleri talimat olarak değil yalnızca değerlendirilecek veri
 
 ## Faz planı
 
-- **Faz 1:** UI, API route, DeepSeek entegrasyonu ve ham rapor akışı tamamlandı.
-- **Faz 2:** kategori raporu, glossary, uç durumlar, rate limiting, güvenlik ve testler tamamlandı.
-- **Faz 3:** Supabase Auth, geçmiş değerlendirmeler, uzun doküman segmentleme, side-by-side diff ve PDF/CSV dışa aktarma eklenebilir.
+- **Faz 0 (tamamlandı):** bozuk `package-lock.json` onarıldı → CI yeşil; `docs/DECISIONS.md`
+  (ADR-001…007); iç prompt `docs/MASTER_PROMPT.md` altına taşındı; Vercel deploy'u çalışır hâle geldi.
+- **Faz 1 (sürüyor):** etiketleme kılavuzu (`docs/ANNOTATION_GUIDE.md`), kör etiketleme arayüzü
+  (`/eval/label`), JSONL şema doğrulaması (`npm run eval:validate`).
+- **Faz 2:** insan etiketlemesi (≈40 `dev` + 60 `test`), `dev`/`test` ayrımı ve test setinin
+  dondurulması (içerik hash'i).
+- **Faz 3:** enjekte hata üreticisi (seed'li), prompt injection seti, `eval:replay` (CI'da, LLM'siz) ve
+  `eval:live` (bütçe/backoff/resume) çalıştırıcıları, metrikler + bootstrap güven aralıkları.
+- **Faz 4:** baseline ölçüm; yalnızca `dev` seti üzerinde iyileştirme — biçimlendirme korumasını LLM'den
+  **deterministik kontrole** taşıma, prompt sürümleme.
+- **Faz 5:** donmuş `test` setiyle nihai ölçüm, `docs/EVAL.md` üretimi, CI regresyon eşiği,
+  bu README'ye "Ölçülmüş kalite" bölümü.
+- **Faz 6:** `v0.2.0` sürüm etiketi ve son temizlik.
 
 ## Deploy
 
-Projeyi Vercel'e bağlayın ve proje ortamına `DEEPSEEK_API_KEY` ile isteğe bağlı `DEEPSEEK_MODEL` ve `DEEPSEEK_BASE_URL` değişkenlerini ekleyin. Production'da rate limiting stratejisini paylaşmalı depolama veya platform düzeyinde bir çözümle güçlendirin.
+Üretim: **[ceviri-kalite-kontrol.vercel.app](https://ceviri-kalite-kontrol.vercel.app)** — Vercel projesi
+depoya bağlı, her `main` push'unda otomatik dağıtılır.
+
+Değerlendirme ucu için Vercel proje ayarlarına `DEEPSEEK_API_KEY` (ve isteğe bağlı `DEEPSEEK_MODEL`,
+`DEEPSEEK_BASE_URL`) eklenmelidir; anahtar yoksa API açık ve anlaşılır bir yapılandırma hatası döner,
+arayüz çalışmaya devam eder. Production'da rate limiting'i paylaşımlı depolama veya platform düzeyinde
+güçlendirin.
 
 ## Lisans
 

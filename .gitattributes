@@ -1,0 +1,13 @@
+# Satır sonları: depoda VE çalışma ağacında daima LF.
+#
+# Neden: Windows'ta `git clone`, global `core.autocrlf` ayarı yüzünden dosyaları CRLF ile açar;
+# prettier/ESLint/biçim kapıları o zaman yüzlerce dosyada düşer. Bu tuzak kardeş projede
+# (pazaryeri-denetci-mcp) temiz klonda gerçekten yaşandı ve `.gitattributes` ile çözüldü.
+* text=auto eol=lf
+
+# İkili dosyalar: içerik dönüşümü yapılmaz.
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff binary
+*.woff2 binary
