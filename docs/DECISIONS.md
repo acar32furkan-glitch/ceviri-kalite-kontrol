@@ -45,7 +45,10 @@ eşleştirilebilmesi gerekir; serbest metin tür adları precision/recall hesab�
 **Eşleştirme kuralı (sorun tespiti P/R/F1 için):** iki sorun eşleşmiş sayılır eğer
 ① metin parçası örtüşmesi yeterli (Unicode NFC normalizasyonu + TR küçük harfe çevirme sonrası,
 insan etiketinin token'larının en az %40'ı araç snippet'inde geçiyor) **ve** ② hata ailesi aynı.
-Kural koda gömülür ve `docs/EVAL.md`'de aynen yazılır.
+Eşleştirme **bire bir ve açgözlü** yapılır (en iyi örtüşme önce): bir insan etiketi tek bir araç sorunuyla
+sayılır; eşleşmeyen fazladan araç sorunları **yanlış pozitif**, eşleşmeyen insan etiketleri **yanlış
+negatif**tir. Kural koda gömülür ve `docs/EVAL.md`'de aynen yayımlanır — okuyucu kuralı değiştirip sonucu
+farklı çıkarabilir, bu yüzden kural şeffaf olmalıdır.
 
 ---
 
